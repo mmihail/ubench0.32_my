@@ -1,0 +1,16 @@
+Begin3
+Title:		Ubench - Unix Benchmark Utility
+Version:	0.32
+Entered-date:	05/30/2000
+Description:	Ubench provides a single measure of
+		perfomance among machines running various flavors of Unix.
+Keywords:	Ubench Linux HP-UX AIX PhysTech SunOS BSD FreeBSD
+Author: 	sv@phystech.com (Sergei Viznyuk)
+Maintained-by:	sv@phystech.com (Sergei Viznyuk)
+Primary-site:	http://www.phystech.com/download/
+Primary-site:	ftp://ftp.phystech.com/pub/
+Alternate-site: ftp://metalab.unc.edu/pub/Linux/system/benchmark
+Original-site:	http://www.phystech.com/download/
+Platforms:	Linux, HP-UX, AIX, SunOS, BSD, FreeBSD
+Copying-policy:	GPL
+End

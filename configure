@@ -1,0 +1,152 @@
+#!/bin/sh
+SYSTEM="`uname`"
+
+cat <<! > Makefile
+###############################################################################
+#									      #
+# 				ubench Makefile				      #
+#									      #
+# 	       Copyright (C) Sergei A. Viznyuk, July, 1999                    #
+#			      All rights reserved.			      #
+#									      #
+###############################################################################
+
+#DEFINES=-DDEBUG
+INSTALLDIR= /usr/local/bin
+
+!
+
+case $SYSTEM in
+  Linux)
+	ARCH="`uname -m`"
+	echo "====  Creating Makefile for $SYSTEM $ARCH"
+	case $ARCH in
+	i486)
+cat <<! >> Makefile
+CC = gcc
+CFLAGS = -O2 -m486 -Wall -malign-loops=2 -malign-jumps=2 -malign-functions=2 -fomit-frame-pointer
+LDFLAGS = -s -lm
+INCLUDES = -I.
+
+!
+	;;
+	i586)
+cat <<! >> Makefile
+CC = gcc
+CFLAGS = -O2 -Wall -malign-loops=2 -malign-jumps=2 -malign-functions=2 -fomit-frame-pointer
+LDFLAGS = -s -lm
+INCLUDES = -I.
+
+!
+	;;
+	i686)
+cat <<! >> Makefile
+CC = gcc
+CFLAGS = -O2 -Wall -malign-loops=2 -malign-jumps=2 -malign-functions=2 -fomit-frame-pointer
+LDFLAGS = -s -lm
+INCLUDES = -I.
+
+!
+	;;
+	*)
+cat <<! >> Makefile
+CC = gcc
+CFLAGS = -O2 -Wall -malign-loops=2 -malign-jumps=2 -malign-functions=2
+LDFLAGS = -s -lm
+INCLUDES = -I.
+
+!
+	;;
+	esac
+	;;
+  HP-UX)
+  ARCH="`uname -m`"
+  BITS="`getconf KERNEL_BITS`"
+  echo "====  Creating Makefile for ${SYSTEM} ${ARCH} ${BITS}-bit"
+  case ${BITS} in
+    64)
+cat <<! >> Makefile
+CC = cc
+CFLAGS = +O2 -Ae -z -DHPUX +DA2.0W +DS2.0 -DSS_64BIT_SERVER -DHPPA64 \\
+-DSLS8NATIVE -DSLU8NATIVE -D_REENTRANT -DHPUX_KTHREAD -DSLXMX_ENABLE \\
+-DSLMXMX_ENABLE -DSLTS_ENABLE +Omultiprocessor +Olibcalls +Ofastaccess \\
++Oentrysched +Onolimit
+LDFLAGS = -Wl,+s -lm
+INCLUDES = -I.
+
+!
+     ;;
+   *)
+cat <<! >> Makefile
+CC = cc
+CFLAGS = +O2 -Ae -z -DHPUX +DA2.0W +DS2.0 -DSS_32BIT_SERVER -DHPPA32 \\
+-DSLS8NATIVE -DSLU8NATIVE -D_REENTRANT -DHPUX_KTHREAD -DSLXMX_ENABLE \\
+-DSLMXMX_ENABLE -DSLTS_ENABLE +Omultiprocessor +Olibcalls +Ofastaccess \\
++Oentrysched +Onolimit
+LDFLAGS = -Wl,+s -lm
+INCLUDES = -I.
+
+!
+    ;;
+   esac
+	;;
+  AIX)
+    ARCH="`oslevel`"
+    echo "====  Creating Makefile for ${SYSTEM} ${ARCH}"
+cat <<! >> Makefile
+CC = xlc
+CFLAGS = -O2 -DOSLEVEL=\\\"${ARCH}\\\" -D_XOPEN_SOURCE -D_POSIX_SOURCE -D_ANSI_C_SOURCE -D_ALL_SOURCE
+LDFLAGS = -lm
+INCLUDE = -I.
+
+!
+    ;;
+  SunOS)
+    echo "====  Creating Makefile for ${SYSTEM} ${ARCH}"
+cat <<! >> Makefile
+CC = cc
+CFLAGS = -xO5 -DSunOS
+LDFLAGS = -s -lm
+INCLUDE = -I.
+
+!
+    ;;
+  *)
+cat <<! >> Makefile
+CC = cc
+CFLAGS = 
+LDFLAGS = -lm
+INCLUDES = -I.
+
+!
+	;;
+  esac
+
+cat <<! >> Makefile
+objects = signals.o cpubench.o membench.o ubench.o
+utimeobjects = creadok.o cwriteok.o tlock.o utime.o
+
+ubench:	\$(objects)
+	\$(CC) \$(CFLAGS) \$(LDFLAGS) -o \$@ \$(objects)
+	@(strip \$@)
+	@(ls -l \$@)
+
+%.o:	%.c
+	\$(CC) \$(CFLAGS) \$(INCLUDES) -c \$<
+
+default: ubench
+
+install: ubench
+	install -c -m 0555 ubench \$(INSTALLDIR)
+
+utime:	\$(utimeobjects)
+	\$(CC) \$(CFLAGS) \$(LDFLAGS) -o \$@ \$^
+	@(strip \$@)
+	@(ls -l \$@)
+
+clean:
+	rm -f ubench utime \$(objects) \$(utimeobjects) core *~
+!
+echo "====  Now type make to compile ubench for $SYSTEM"
+exit 0
+q

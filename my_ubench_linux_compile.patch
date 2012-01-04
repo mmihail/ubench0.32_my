@@ -1,0 +1,23 @@
+--- cpubench.c.orig	2011-10-04 12:42:09.362233760 +0400
++++ cpubench.c	2011-10-04 12:42:53.953899597 +0400
+@@ -90,7 +90,7 @@
+   clock_t clticks;
+   clticks=times(&tmsb);
+   if ( cpucalc(pmin) )
+-    dlt=((double )times(&tmsb)-(double )clticks)/(double )CLK_TCK;
++    dlt=((double )times(&tmsb)-(double )clticks)/(double )sysconf(_SC_CLK_TCK);
+   else
+     dlt=0.0;
+   return dlt;
+--- membench.c.orig	2011-10-04 12:42:24.657734318 +0400
++++ membench.c	2011-10-04 12:33:42.921733767 +0400
+@@ -80,7 +80,8 @@
+   for(i=0;i<pmin;i++)
+     free(p[i]);
+   free(p);
+-  dlt=((double )times(&tmsb)-(double )clticks)/(double )CLK_TCK;
++  dlt=((double )times(&tmsb)-(double )clticks)/(double )sysconf(_SC_CLK_TCK)
++;
+   return dlt;
+ }
+ /*****************************************************************************/

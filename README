@@ -1,0 +1,83 @@
+0. Introduction
+
+  The Unix Benchmark Utility "ubench" provides
+a single measure of perfomance among computer systems running
+various flavors of Unix operation system.
+  Ubench is distributed in the hope that it
+will be useful, but without any warranty; without even the
+implied warranty of merchantability or fitness for a
+particular purpose.
+
+  The current development release tests only
+CPU(s) and memory. In the future releases
+there will be tests added for disk and TCP/IP.
+Ubench is taking advantage of multiple CPUs on an SMP system
+and the results will reflect that unless ubench has been
+invoked with '-s' flag.
+Other factors affecting ubench results include
+quality of the C-compiler, C-library, kernel version,
+OS scalability, amount of RAM, presence of other
+applications running at the same time, etc.
+
+  Ubench is executing rather senseless mathematical
+integer and floating-point calculations for 3 mins
+concurrently using several processes, and the result
+Ubench CPU benchmark. The ratio of floating-point calculations
+to integer is about 1:3.
+  Ubench will spawn about 2 concurrent processes for each CPU
+available on the system. This ensures all available
+raw CPU horsepower is used.
+  Ubench is executing rather senseless memory allocation and
+memory to memory copying operations for another 3 mins
+concurrently using several processes, and the result
+Ubench MEM benchmark.
+
+The following are the samples of ubench output
+for some systems. The up-to-date list of benchmarks
+is available at http://www.phystech.com/download/ubench.html.
+
+-----------------------------+------------+------------+------------+
+System Description           | Ubench CPU | Ubench MEM | Ubench AVG |
+-----------------------------+------------+------------+------------+
+HP 9000/800/N4000-36         |            |            |            |
+HP-UX B.11.00 64-bit         |     57,546 |    113,523 |     85,534 |
+6 CPUs, 360Mhz, 6Gb RAM      |            |            |            |
+-----------------------------+------------+------------+------------+
+Sun Enterprise Server 4500   |            |            |            |
+SunOS 5.7 64-bit,            |            |            |            |
+32-bit C compiler,           |     59,082 |     60,055 |     59,568 |
+6 CPUs, 336MHz, 6Gb RAM      |            |            |            |
+-----------------------------+------------+------------+------------+
+IBM RS/6000 J50, MCA-based   |            |            |            |
+AIX 4.2.1.0 32-bit           |     59,423 |     45,408 |     52,415 |
+6x604e PPC, 200MHz 3Gb RAM   |            |            |            |
+-----------------------------+------------+------------+------------+
+HP 9000/800/K580             |            |            |            |
+HP-UX B.11.00 64-bit         |     26,482 |     46,082 |     36,282 |
+4 CPUs, 240Mhz, 4Gb RAM      |            |            |            |
+-----------------------------+------------+------------+------------+
+HP 9000/898/K370             |            |            |            |
+HP-UX B.11.00 64-bit         |     21,270 |     24,233 |     22,751 |
+4 CPUs 200Mhz  4Gb RAM       |            |            |            |
+-----------------------------+------------+------------+------------+
+IBM RS/6000 E30, PCI-based   |            |            |            |
+AIX 4.2.1.0 32-bit           |      8,025 |     10,428 |      9,226 |
+1x604e PPC, 200MHz 256Mb RAM |            |            |            |
+-----------------------------+------------+------------+------------+
+i486DX2-66, 32M RAM          |            |            |            |
+Linux 2.3.39, gcc 2.95.2     |      1,588 |      1,736 |      1,662 |
+glibc-2.1.3                  |            |            |            |
+-----------------------------+------------+------------+------------+
+
+1. Install and use
+
+1.  type ./configure to create Makefile
+2.  type make to compile ubench
+3.  type ./ubench to run Unix benchmark suite
+4.  email the results to <sv@phystech.com> with
+    description of the system (OS version,
+    hardware model, number of CPUs, CPU clock
+    frequency, size of L1 and L2 cache, amount of RAM).
+
+Sergei Viznyuk <sv@phystech.com>
+

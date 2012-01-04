@@ -1,0 +1,121 @@
+--- cpubench.c.orig	2011-11-03 19:44:32.971289866 +0400
++++ cpubench.c	2011-11-03 19:49:48.678926541 +0400
+@@ -47,7 +47,7 @@
+ extern		jmp_buf	env;
+ #endif
+ 
+-extern		int	CPUflag,ONEflag;
++extern		int	CPUflag,ONEflag,ncpu,loop;
+ pid_t		child_pid[MAX_CHILDS];
+ int		child_number	=	0;
+ int		child		=	0;
+@@ -132,6 +132,7 @@
+       case 0:
+         break;
+       case SIGALRM:
++	if (!loop) {
+         for (i=0;i<child_number;i++) kill(child_pid[i],SIGALRM);
+         if ( child ) exit(0);
+         child_number=0;
+@@ -148,6 +149,7 @@
+         CPUflag=0;
+         child_number=0;
+         return 0;
++	}
+     }
+   itim=cpucalibrate(CPUREFTIME);
+   if ( ONEflag )
+@@ -179,8 +181,10 @@
+       child=1;
+       while ( 1 )
+ 	{
+-	  if ( (cpuload(itim) <= CPUREFTIME) )
+-	    if ( parent && (child_number < MAX_CHILDS ) )
++//	  if ( (cpuload(itim) <= CPUREFTIME) )
++	    cpuload(itim);
++//	    if ( parent && (child_number < MAX_CHILDS ) )
++	    if ( parent && (child_number < ncpu) )
+ 	      {
+ 	        child_pid[child_number]=fork();
+ 	        if ( child_pid[child_number] > 0 )
+--- ubench.c.orig	2011-11-03 19:46:24.876553740 +0400
++++ ubench.c	2011-11-03 19:49:00.558357381 +0400
+@@ -44,9 +44,12 @@
+ int	netbench();
+ #endif
+ void	signalSetup();
++int ncpu_on=0;
++int loop=0;
+ 
+ int	CPUflag		=	0;
+ int	MEMflag		=	0;
++int	ncpu		=	1;
+ #ifdef DISKNETYES
+ int	NETflag		=	0;
+ int	DISKflag	=	0;
+@@ -55,6 +58,8 @@
+ /*****************************************************************************/
+ void print_version()
+ {
++  printf("!!! Modified by Misha 2011(c) selected Loop=%i Ncpu=%i(use -p <Ncpu> key) !!!\n",loop,ncpu);
++
+   fprintf(stdout,"\
+ Unix Benchmark Utility v."PROGRAM_VERSION"\n\
+ Copyright (C) July, 1999 PhysTech, Inc.\n\
+@@ -66,10 +71,14 @@
+ {
+ #ifdef DISKNETYES
+   fprintf(stderr,
+-  "Usage: ubench [-cmhs] [-d [raw_device]] [-n [interface]]\n");
++  "Usage: ubench [-cmhspl] [-d [raw_device]] [-n [interface]]\n");
++  fprintf(stderr,
++  "Usage: ubench [-p <NCPU>]\n");
+ #else
+   fprintf(stderr,
+-  "Usage: ubench [-cmhs]\n");
++  "Usage: ubench [-cmhspl]\n");
++  fprintf(stderr,
++  "Usage: ubench [-p <NCPU>]\n");
+ #endif
+ }
+ /*****************************************************************************/
+@@ -83,7 +92,7 @@
+   int i			=	1;
+   
+   while ( argc[i] )
+-    if ( argc[i][0]=='-' )
++    if ( argc[i][0]=='-' ) {
+ prgs: switch ( argc[i][s] )
+ 	{
+ 	  case 0:
+@@ -98,6 +107,14 @@
+ 	    s++;
+ 	    MEMflag=1;
+ 	    goto prgs;
++	  case 'l':
++	    s++;
++	    loop=1;
++	    goto prgs;
++	  case 'p':
++		ncpu_on=1;
++		i++;
++		break;	
+ #ifdef DISKNETYES
+ 	  case 'd':
+ 	    s++;
+@@ -117,6 +134,15 @@
+ 	    print_usage();
+ 	    exit(1);
+ 	}
++	if (ncpu_on && argc[i]) {
++		ncpu_on=0;
++		ncpu=atoi(argc[i]);
++		if (ncpu<1) {
++			printf("Wrong value for -p ... Must be >0\n");
++		}
++		i++;
++	}
++    }	
+     else
+       argc[k++]=argc[i++];
+ 

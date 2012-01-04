@@ -1,0 +1,116 @@
+.\" $Id$
+.\"
+.TH ubench 8 "21 February 2000" "ubench 0.3" "Linux System Manager's Manual"
+
+.SH NAME
+ubench \- Unix Benchmark Utility
+
+.SH SYNOPSIS
+.in +.5i
+.ti -.5i
+ubench
+\%[\-cmhs]
+.in -.5i
+.SH DESCRIPTION
+.B ubench
+is an attempt to introduce a single measure of
+perfomance among machines running various flavors of Unix.
+
+.B Ubench
+is executing rather senseless mathematical
+integer and floating-point calculations for 3 mins
+concurrently using several processes, and the result
+is
+.B Ubench CPU
+benchmark. The ratio of floating-point calculations
+to integer is about 1:3.
+.B Ubench
+will spawn about 2 concurrent processes for each CPU
+available on the system. This ensures all available
+raw CPU horsepower is used.
+
+.B Ubench
+is executing rather senseless memory allocation and
+memory to memory copying operations for another 3 mins
+concurrently using several processes, and the result
+is
+.B Ubench MEM
+benchmark.
+
+.B Ubench
+will take an average of
+.B CPU
+and
+.B MEM
+benchmarks and calculate
+.B Ubench AVG
+benchmark which is supposed to represent the true computing
+power of the system.
+
+.SH OPTIONS
+.TP
+.BI \-c
+With this flag
+.B ubench
+will only execute
+.B CPU
+benchmark.
+.TP
+.BI \-m
+With this flag
+.B ubench
+will only execute
+.B MEM
+benchmark.
+.TP
+.BI \-s
+Prevents
+.B ubench
+from spawning multiple processes. This
+will force ubench to use only 1 CPU on the 
+system and the result will be
+.B Ubench Single CPU
+and
+.B Ubench Single MEM
+benchmarks.
+.TP
+.BI \-h
+Prints usage information.
+
+.SH FILES
+.PD 0
+The documentation on
+.B ubench
+and current list of
+.B ubench
+benchmarks are available at
+.LP
+.B http://www.phystech.com/download/ubench.html
+
+.SH BUGS
+.PD 0
+The ratio which
+.B CPU
+and
+.B MEM
+scores contribute to the
+.B CPU
+and
+.B MEM
+benchmarks,
+and to the final
+.B AVG
+benchmark has been calculated so that
+.B CPU
+and
+.B MEM
+scores averaged over several widely different
+computer systems are equal to each other
+and make equal contribution to average
+.B AVG
+score. As more and more benchmarks are available, the ratio
+will be calculated more precisely.
+
+.SH AUTHORS
+.LP
+Sergei Viznyuk <sv@phystech.com>
